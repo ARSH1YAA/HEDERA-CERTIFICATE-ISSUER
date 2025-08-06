@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hedera Certificate Issuer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .verify-link {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎓 Hedera Certificate Issuer</h1>
+  <form id="certForm">
+    <input type="text" id="recipient" placeholder="Enter recipient Hedera Account ID" required />
+    <button type="submit">Mint Certificate</button>
+  </form>
+  <div id="output"></div>
+
+  <a class="verify-link" href="/verify.html">🔍 Verify a Certificate</a>
+
+  <script>
+    document.getElementById("certForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const recipient = document.getElementById("recipient").value.trim();
+      const output = document.getElementById("output");
+      output.innerHTML = "⏳ Minting... Please wait.";
+
+      try {
+        const res = await fetch("/create-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ recipient }),
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          output.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
+          return;
+        }
+
+        output.innerHTML = `
+          <p>✅ Token minted: <strong>${data.tokenId}</strong></p>
+          <p><a href="${data.hashscan}" target="_blank">🔗 View on HashScan</a></p>
+          <p>${data.verified ? "✅ Verified on chain" : "⏳ Verification pending..."}</p>
+          <img src="${data.qrImage}" width="150" />
+          <p><a download="certificate.pdf" href="data:application/pdf;base64,${data.pdfBase64}">📄 Download Certificate PDF</a></p>
+        `;
+      } catch (err) {
+        output.innerHTML = `<p style="color:red;">❌ Something went wrong.</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

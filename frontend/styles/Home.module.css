@@ -1,0 +1,48 @@
+.container {}
+.main {}
+.title {}
+.description {}
+.code {}
+.grid {}
+.card {}
+.footer {}
+.logo {}
+.header {
+  margin-top: 2rem;
+  text-align: center;
+}
+.logoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.headerTitle {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.headerSubtitle {
+  color: #666;
+  margin-top: 0.5rem;
+}
+.mainCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+}
+.divider {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+.uploadSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.footerContent {
+  text-align: center;
+  padding: 1rem 0;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify Certificate</title>
+  <style>
+    body { font-family: sans-serif; padding: 30px; max-width: 600px; margin: auto; }
+    input, button { padding: 10px; width: 100%; margin-bottom: 15px; }
+    .result { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Verify Certificate Token</h1>
+  <input id="tokenId" placeholder="Enter Hedera Token ID (e.g. 0.0.123456)" />
+  <button onclick="verify()">Verify</button>
+  <div id="result" class="result"></div>
+
+  <script>
+    async function verify() {
+      const tokenId = document.getElementById("tokenId").value.trim();
+      if (!tokenId) return alert("Please enter a Token ID");
+
+      document.getElementById("result").innerText = "Checking...";
+
+      try {
+        const res = await fetch(`/verify-token?tokenId=${tokenId}`);
+        const data = await res.json();
+
+        if (!data.success) {
+          document.getElementById("result").innerHTML = `<p style="color:red">❌ ${data.error}</p>`;
+          return;
+        }
+
+        const html = `
+          <p><strong>✅ Token Found</strong></p>
+          <p><strong>Token ID:</strong> ${data.token_id}</p>
+          <p><strong>Symbol:</strong> ${data.symbol}</p>
+          <p><strong>Type:</strong> ${data.type}</p>
+          <p><strong>Created At:</strong> ${new Date(data.created_timestamp * 1000).toLocaleString()}</p>
+          <p><strong>Owner:</strong> ${data.treasury_account_id}</p>
+          <p><a href="https://hashscan.io/testnet/token/${data.token_id}" target="_blank">🔗 View on HashScan</a></p>
+        `;
+
+        document.getElementById("result").innerHTML = html;
+
+      } catch (err) {
+        document.getElementById("result").innerHTML = `<p style="color:red">❌ Error verifying token</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
